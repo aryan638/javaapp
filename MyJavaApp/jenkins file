@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+
+    environment {
+        MAVEN_HOME = '/usr/local/apache-maven' // Make sure the path matches your Maven installation
+        JAVA_HOME = '/usr/lib/jvm/java-8-openjdk-amd64' // Make sure the path matches your Java installation
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from version control (Git, for example)
+                git 'https://github.com/yourusername/HelloWorld.git'  // Replace with your Git repository URL
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    // Run Maven to compile the Java project
+                    sh "'${MAVEN_HOME}/bin/mvn' clean install"
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    // Run Maven to execute tests (if you have any)
+                    sh "'${MAVEN_HOME}/bin/mvn' test"
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    // Any deploy logic, this can be optional
+                    echo 'Deploying application...'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build and tests successful.'
+        }
+        failure {
+            echo 'Build or tests failed.'
+        }
+    }
+}
